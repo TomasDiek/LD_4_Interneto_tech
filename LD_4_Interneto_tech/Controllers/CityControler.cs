@@ -28,7 +28,7 @@ namespace LD_4_Interneto_tech.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> GetCities()
         {
-            throw new UnauthorizedAccessException();
+            //throw new UnauthorizedAccessException();
             var cities = await uow.CityRepository.GetCitiesAsync();
 
             var citiesDto = mapper.Map<IEnumerable<CityDto>>(cities);

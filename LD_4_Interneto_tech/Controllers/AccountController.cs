@@ -37,7 +37,7 @@ namespace LD_4_Interneto_tech.Controllers
                 apiError.ErrorCode=Unauthorized().StatusCode;
                 apiError.ErrorMessage="Invalid user name or password";
                 apiError.ErrorDetails="This error appear when provided user id or password does not exists";
-                return Unauthorized(apiError);
+                return BadRequest(apiError);
             }
 
             var loginRes = new LoginResDto();
@@ -51,7 +51,7 @@ namespace LD_4_Interneto_tech.Controllers
         {
             ApiError apiError = new ApiError();
 
-            if (string.IsNullOrEmpty(loginReq.UserName) || string.IsNullOrEmpty(loginReq.Password))
+            if (loginReq.UserName.IsEmpty() || loginReq.Password.IsEmpty())
             {
                 apiError.ErrorCode = BadRequest().StatusCode;
                 apiError.ErrorMessage = "User name or password can not be blank";
