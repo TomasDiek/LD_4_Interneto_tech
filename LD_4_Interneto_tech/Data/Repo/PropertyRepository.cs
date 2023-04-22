@@ -35,7 +35,7 @@ namespace LD_4_Interneto_tech.Data.Repo
             .Include(p => p.Photos)
             .Where(p => p.SellRent == sellRent)
             .ToListAsync();
-
+               
             return properties;
         }
 

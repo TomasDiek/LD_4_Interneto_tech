@@ -19,8 +19,7 @@ namespace LD_4_Interneto_tech.Controllers
         private readonly IPhotoService photoService;
 
         public PropertyController(IUnitOfWork uow,
-        IMapper mapper,
-        IPhotoService photoService)
+        IMapper mapper,IPhotoService photoService)
         {
             this.photoService = photoService;
             this.uow = uow;
@@ -60,7 +59,7 @@ namespace LD_4_Interneto_tech.Controllers
             await uow.SaveAsync();
             return StatusCode(201);
         }
-        /*
+        
         //property/add/photo/1
         [HttpPost("add/photo/{propId}")]
         [Authorize]
@@ -91,7 +90,7 @@ namespace LD_4_Interneto_tech.Controllers
 
             return BadRequest("Some problem occured in uploading photo..");
         }
-        */
+        
         //property/set-primary-photo/42/jl0sdfl20sdf2s
         [HttpPost("set-primary-photo/{propId}/{photoPublicId}")]
         [Authorize]
@@ -125,6 +124,7 @@ namespace LD_4_Interneto_tech.Controllers
             return BadRequest("Failed to set primary photo");
         }
         /*
+        
         [HttpDelete("delete-photo/{propId}/{photoPublicId}")]
         [Authorize]
         public async Task<IActionResult> DeletePhoto(int propId, string photoPublicId)
@@ -158,9 +158,9 @@ namespace LD_4_Interneto_tech.Controllers
             if (await uow.SaveAsync()) return Ok();
 
             return BadRequest("Failed to delete photo");
-        }
+        }*/
         
-        */
+        
 
 
     }
