@@ -123,7 +123,7 @@ namespace LD_4_Interneto_tech.Controllers
 
             return BadRequest("Failed to set primary photo");
         }
-        /*
+        
         
         [HttpDelete("delete-photo/{propId}/{photoPublicId}")]
         [Authorize]
@@ -158,7 +158,7 @@ namespace LD_4_Interneto_tech.Controllers
             if (await uow.SaveAsync()) return Ok();
 
             return BadRequest("Failed to delete photo");
-        }*/
+        }
         
         
 
