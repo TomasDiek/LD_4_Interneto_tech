@@ -59,6 +59,25 @@ namespace LD_4_Interneto_tech.Controllers
             await uow.SaveAsync();
             return StatusCode(201);
         }
+        //property/delete/1
+        [HttpDelete("delete/{id}")]
+        [Authorize]
+        public async Task<IActionResult> DeleteProperty(int id)
+        {
+            var userId = GetUserId();
+
+            var property = await uow.PropertyRepository.GetPropertyByIdAsync(id);
+
+            if (property.PostedBy != userId)
+                return BadRequest("You are not authorised to delete the property");
+
+            if (property == null || property.PostedBy != userId)
+                return BadRequest("No such property exists");
+
+            uow.PropertyRepository.DeleteProperty(id);
+            await uow.SaveAsync();
+            return Ok(id);
+        }
         
         //property/add/photo/1
         [HttpPost("add/photo/{propId}")]
@@ -159,9 +178,5 @@ namespace LD_4_Interneto_tech.Controllers
 
             return BadRequest("Failed to delete photo");
         }
-        
-        
-
-
     }
 }
