@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using LD_4_Interneto_tech.Interfaces;
 using LD_4_Interneto_tech.Models;
 using LD_4_Interneto_tech.Data;
+using LD_4_Interneto_tech.Dto;
 
 namespace LD_4_Interneto_tech.Data.Repo
 {
@@ -61,7 +62,31 @@ namespace LD_4_Interneto_tech.Data.Repo
 
             return properties;
         }
+        public async Task<bool> UpdateProperty(int id, Property property)
+        {
+           var propertyDb = await GetPropertyByIdAsync(id);
 
+            if (property == null)
+            {
+                return false;
+            }
+            
+            propertyDb.SellRent = property.SellRent;
+            propertyDb.PropertyTypeId = property.PropertyTypeId;
+            propertyDb.FurnishingTypeId = property.FurnishingTypeId;
+            propertyDb.Price = property.Price;
+            propertyDb.BuiltArea = property.BuiltArea;
+            propertyDb.CityId = property.CityId;
+            propertyDb.ReadyToMove = property.ReadyToMove;
+            propertyDb.Address = property.Address;
+            propertyDb.TotalFloors = property.TotalFloors;
+            propertyDb.EstPossessionOn = property.EstPossessionOn;
+            propertyDb.Age = property.Age;
+            propertyDb.Description = property.Description;
 
+            await dc.SaveChangesAsync();
+
+            return true;
+        }
     }
 }

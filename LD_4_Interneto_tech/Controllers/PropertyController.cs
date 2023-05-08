@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using LD_4_Interneto_tech.Dto;
 using LD_4_Interneto_tech.Interfaces;
 using LD_4_Interneto_tech.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace LD_4_Interneto_tech.Controllers
 {
@@ -59,7 +60,40 @@ namespace LD_4_Interneto_tech.Controllers
             await uow.SaveAsync();
             return StatusCode(201);
         }
-        
+        //property/update/{id}
+        [HttpPut("update/{id}")]
+        [Authorize]
+        public async Task<IActionResult> UpdateProperty(int id, [FromBody] PropertyDto propertyDto)
+        {
+            var property = await uow.PropertyRepository.GetPropertyByIdAsync(id);
+
+            if (property == null)
+            {
+                return NotFound();
+            }
+
+            var userId = GetUserId();
+
+            if (property.PostedBy != userId)
+            {
+                return Forbid();
+            }
+
+            var propertyMap = mapper.Map<Property>(propertyDto);
+            propertyMap.PostedBy = userId;
+            propertyMap.LastUpdatedBy = userId;
+            propertyMap.LastUpdatedOn = DateTime.Now;
+
+            var result = await uow.PropertyRepository.UpdateProperty(id, propertyMap);
+
+            if (result)
+            {
+                return NoContent();
+            }
+
+            return NotFound();
+        }
+
         //property/add/photo/1
         [HttpPost("add/photo/{propId}")]
         [Authorize]
