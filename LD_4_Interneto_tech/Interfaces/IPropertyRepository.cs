@@ -12,5 +12,6 @@ namespace LD_4_Interneto_tech.Interfaces
         void AddProperty(Property property);
         void DeleteProperty(int id);
         Task<bool> UpdateProperty(int id, Property property);
+        Task<IEnumerable<Property>> GetPropertiesByUserIdAsync(int userId);
     }
 }

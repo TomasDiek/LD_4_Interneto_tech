@@ -9,5 +9,11 @@ namespace LD_4_Interneto_tech.Interfaces
          void Register(string userName, string password); 
 
          Task<bool> UserAlreadyExists(string userName);
+        Task<User> GetUserByResetToken(string resetToken);
+        Task<User> GetUserByUsername(string userName);
+        //byte[] HashPassword(string password, out passwordHash, out passwordKey);
+        void HashPassword(string newPassword, out byte[] passwordHash, out byte[] passwordKey);
+        Task SaveAsync();
+        
     }
 }

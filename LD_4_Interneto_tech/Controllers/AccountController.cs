@@ -11,6 +11,8 @@ using LD_4_Interneto_tech.Errors;
 using LD_4_Interneto_tech.Extensions;
 using LD_4_Interneto_tech.Interfaces;
 using LD_4_Interneto_tech.Models;
+using System.Net;
+using System.Net.Mail;
 
 namespace LD_4_Interneto_tech.Controllers
 {
@@ -94,6 +96,97 @@ namespace LD_4_Interneto_tech.Controllers
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
         }
+
+        // Reset passowrd
+        [HttpPost("reset-password")]
+        public async Task<IActionResult> ResetPassword(ResetPasswordDto resetPasswordDto)
+        {
+            var user = await uow.UserRepository.GetUserByResetToken(resetPasswordDto.ResetToken);
+            if (user == null)
+            {
+                return BadRequest("Invalid or expired reset token.");
+            }
+
+            byte[] passwordHash, passwordKey;
+            uow.UserRepository.HashPassword(resetPasswordDto.NewPassword, out passwordHash, out passwordKey);
+
+            user.Password = passwordHash;
+            user.PasswordKey = passwordKey;
+            await uow.SaveAsync();
+
+            return Ok("Password reset successfully.");
+        }
+
+
+        [HttpPost("request-password-reset")]
+        public async Task<IActionResult> RequestPasswordReset(PasswordResetRequestDto resetRequestDto)
+        {
+            var user = await uow.UserRepository.GetUserByUsername(resetRequestDto.UserName);
+            if (user == null)
+            {
+                return BadRequest("Invalid username.");
+            }
+
+            user.ResetToken = GenerateResetToken();
+            await uow.SaveAsync();
+
+            // Send reset instructions email
+            SendResetInstructionsEmail(user.Email, user.ResetToken);
+
+            return Ok("Password reset instructions sent successfully.");
+        }
+
+
+        private string GenerateResetToken()
+        {
+            return Guid.NewGuid().ToString();
+        }
+        private string HashResetToken(string resetToken)
+        {
+            // You can hash the reset token if needed
+            return resetToken;
+        }
+        private void SendResetInstructionsEmail(string email, string resetToken)
+        {
+            // Email settings (replace with your SMTP server details)
+            string smtpServer = "smtp-mail.outlook.com";
+            int smtpPort = 587; // Example port number
+            string smtpUsername = "tomdie1@outlook.com";
+            string smtpPassword = "Random17s";
+            bool enableSsl = true;
+
+            // Sender email address
+            string fromEmail = "tomdie1@outlook.com";
+
+            // Recipient email address
+            string toEmail = email;
+
+            // Email subject
+            string subject = "Password Reset Instructions";
+
+            // Email body
+            string body = $"Dear user,\n\nTo reset your password, please click the following link: http://localhost:4200/reset-password?token={resetToken}\n\nThis link will expire after a certain period.\n\nRegards,\nHomeFinder Team";
+
+            // Create SMTP client
+            using (SmtpClient smtpClient = new SmtpClient(smtpServer, smtpPort))
+            {
+                smtpClient.EnableSsl = enableSsl;
+                smtpClient.Credentials = new NetworkCredential(smtpUsername, smtpPassword);
+
+                // Create email message
+                using (MailMessage mailMessage = new MailMessage(fromEmail, toEmail))
+                {
+                    mailMessage.Subject = subject;
+                    mailMessage.Body = body;
+                    mailMessage.IsBodyHtml = false;
+
+                    // Send email
+                    smtpClient.Send(mailMessage);
+                }
+            }
+        }
+
+
 
     }
 }

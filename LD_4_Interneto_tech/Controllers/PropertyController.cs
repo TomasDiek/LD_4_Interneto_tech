@@ -28,6 +28,7 @@ namespace LD_4_Interneto_tech.Controllers
         }
 
         //property/list/1
+        /*
         [HttpGet("list/{sellRent}")]
         [AllowAnonymous]
         public async Task<IActionResult> GetPropertyList(int sellRent)
@@ -36,7 +37,38 @@ namespace LD_4_Interneto_tech.Controllers
             var propertyListDTO = mapper.Map<IEnumerable<PropertyListDto>>(properties);
             return Ok(propertyListDTO);
         }
+        */
+        [HttpGet("list/{sellRent}")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetPropertyList(int sellRent,
+        [FromQuery] int? minPrice, [FromQuery] int? maxPrice,
+        [FromQuery] int? minBuiltArea, [FromQuery] int? maxBuiltArea,
+        [FromQuery] int? propertyTypeId, [FromQuery] int? furnishingTypeId,
+        [FromQuery] int? minFloors, [FromQuery] int? maxFloors)
+        {
+            var properties = await uow.PropertyRepository.GetPropertiesAsync(sellRent);
 
+            // Apply filtering based on query parameters
+            if (minPrice.HasValue)
+                properties = properties.Where(p => p.Price >= minPrice);
+            if (maxPrice.HasValue)
+                properties = properties.Where(p => p.Price <= maxPrice);
+            if (minBuiltArea.HasValue)
+                properties = properties.Where(p => p.BuiltArea >= minBuiltArea);
+            if (maxBuiltArea.HasValue)
+                properties = properties.Where(p => p.BuiltArea <= maxBuiltArea);
+            if (propertyTypeId.HasValue)
+                properties = properties.Where(p => p.PropertyTypeId == propertyTypeId);
+            if (furnishingTypeId.HasValue)
+                properties = properties.Where(p => p.FurnishingTypeId == furnishingTypeId);
+            if (minFloors.HasValue)
+                properties = properties.Where(p => p.TotalFloors >= minFloors);
+            if (maxFloors.HasValue)
+                properties = properties.Where(p => p.TotalFloors <= maxFloors);
+
+            var propertyListDTO = mapper.Map<IEnumerable<PropertyListDto>>(properties);
+            return Ok(propertyListDTO);
+        }
         //property/detail/1
         [HttpGet("detail/{id}")]
         [AllowAnonymous]
@@ -113,7 +145,19 @@ namespace LD_4_Interneto_tech.Controllers
             await uow.SaveAsync();
             return Ok(id);
         }
-        
+        //User Posts
+        //property/user/{userId}
+        [HttpGet("user/{userId}")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetPropertiesByUserId(int userId)
+        {
+            // Retrieve properties by user ID from the repository
+            var properties = await uow.PropertyRepository.GetPropertiesByUserIdAsync(userId);
+
+            var propertyListDTO = mapper.Map<IEnumerable<PropertyListDto>>(properties);
+            return Ok(propertyListDTO);
+        }
+
         //property/add/photo/1
         [HttpPost("add/photo/{propId}")]
         [Authorize]

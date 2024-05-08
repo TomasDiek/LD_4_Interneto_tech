@@ -10,5 +10,7 @@ namespace LD_4_Interneto_tech.Models
         public byte[] Password { get; set; }
 
         public byte[] PasswordKey { get; set; }
+        public string ResetToken { get; internal set; }
+        public string Email { get; set; }
     }
 }

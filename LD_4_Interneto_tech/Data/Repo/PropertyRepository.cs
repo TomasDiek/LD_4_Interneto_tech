@@ -90,5 +90,17 @@ namespace LD_4_Interneto_tech.Data.Repo
 
             return true;
         }
+        public async Task<IEnumerable<Property>> GetPropertiesByUserIdAsync(int userId)
+        {
+            var properties = await dc.Properties
+                .Include(p => p.PropertyType)
+                .Include(p => p.City)
+                .Include(p => p.FurnishingType)
+                .Include(p => p.Photos)
+                .Where(p => p.PostedBy == userId) // Assuming "PostedBy" is the property representing the user ID
+                .ToListAsync();
+
+            return properties;
+        }
     }
 }
