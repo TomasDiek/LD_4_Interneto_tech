@@ -47,7 +47,7 @@ namespace LD_4_Interneto_tech.Data.Repo
             }            
         }
 
-        public void Register(string userName, string password)
+        public void Register(string userName, string password, string email, string mobileNumber)
         {
             byte[] passwordHash, passwordKey;
 
@@ -62,6 +62,8 @@ namespace LD_4_Interneto_tech.Data.Repo
             user.Username = userName;
             user.Password = passwordHash;
             user.PasswordKey = passwordKey;
+            user.Email = email;
+            user.MobileNumber= mobileNumber;
 
             dc.Users.Add(user);
         }
@@ -80,27 +82,6 @@ namespace LD_4_Interneto_tech.Data.Repo
         {
             return await dc.Users.FirstOrDefaultAsync(u => u.Username == userName);
         }
-
-        /* public byte[] HashPassword(string password)
-         {
-
-             /*
-              using (var sha256 = SHA256.Create())
-              {
-                  // Compute hash of the password
-                  return sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
-              }
-
-             byte[] passwordHash, passwordKey;
-             using (var hmac = new HMACSHA512())
-             {
-                 // Compute hash of the password
-                 passwordKey = hmac.Key;
-                 passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
-                 //return sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
-             }
-             return passwordHash;
-         }*/
         public void HashPassword(string password, out byte[] passwordHash, out byte[] passwordKey)
         {
             using (var hmac = new HMACSHA512())
@@ -109,8 +90,6 @@ namespace LD_4_Interneto_tech.Data.Repo
                 passwordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(password));
             }
         }
-
-
         public async Task SaveAsync()
         {
             await dc.SaveChangesAsync();

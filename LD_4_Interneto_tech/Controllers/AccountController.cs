@@ -13,6 +13,7 @@ using LD_4_Interneto_tech.Interfaces;
 using LD_4_Interneto_tech.Models;
 using System.Net;
 using System.Net.Mail;
+using Microsoft.AspNetCore.Authorization;
 
 namespace LD_4_Interneto_tech.Controllers
 {
@@ -49,25 +50,31 @@ namespace LD_4_Interneto_tech.Controllers
         }
         
         [HttpPost("register")]
-        public async Task<IActionResult> Register(LoginReqDto loginReq)
+        public async Task<IActionResult> Register(RegisterDto registerDto)
         {
             ApiError apiError = new ApiError();
 
-            if (loginReq.UserName.IsEmpty() || loginReq.Password.IsEmpty())
+            if (registerDto.UserName.IsEmpty() || registerDto.Password.IsEmpty())
             {
                 apiError.ErrorCode = BadRequest().StatusCode;
                 apiError.ErrorMessage = "User name or password can not be blank";
                 return BadRequest(apiError);
             }
-
-            if (await uow.UserRepository.UserAlreadyExists(loginReq.UserName)) {
+            if (registerDto.Email.IsEmpty() || registerDto.MobileNumber.IsEmpty())
+            {
+                apiError.ErrorCode = BadRequest().StatusCode;
+                apiError.ErrorMessage = "Email or mobile number can not be blank";
+                return BadRequest(apiError);
+            }
+            if (await uow.UserRepository.UserAlreadyExists(registerDto.UserName)) {
                 apiError.ErrorCode=BadRequest().StatusCode;
                 apiError.ErrorMessage="User already exists, please try different user name";
                 return BadRequest(apiError);
             }                
 
-            uow.UserRepository.Register(loginReq.UserName, loginReq.Password);
+            uow.UserRepository.Register(registerDto.UserName, registerDto.Password, registerDto.Email, registerDto.MobileNumber);
             await uow.SaveAsync();
+            SendRegistrationEmail(registerDto.Email);
             return StatusCode(201);
         }
         
@@ -141,12 +148,7 @@ namespace LD_4_Interneto_tech.Controllers
         {
             return Guid.NewGuid().ToString();
         }
-        private string HashResetToken(string resetToken)
-        {
-            // You can hash the reset token if needed
-            return resetToken;
-        }
-        private void SendResetInstructionsEmail(string email, string resetToken)
+        private void SendEmail(string email, string subject, string body)
         {
             // Email settings (replace with your SMTP server details)
             string smtpServer = "smtp-mail.outlook.com";
@@ -160,12 +162,6 @@ namespace LD_4_Interneto_tech.Controllers
 
             // Recipient email address
             string toEmail = email;
-
-            // Email subject
-            string subject = "Password Reset Instructions";
-
-            // Email body
-            string body = $"Dear user,\n\nTo reset your password, please click the following link: http://localhost:4200/reset-password?token={resetToken}\n\nThis link will expire after a certain period.\n\nRegards,\nHomeFinder Team";
 
             // Create SMTP client
             using (SmtpClient smtpClient = new SmtpClient(smtpServer, smtpPort))
@@ -186,7 +182,53 @@ namespace LD_4_Interneto_tech.Controllers
             }
         }
 
+        private void SendRegistrationEmail(string email)
+        {
+            // Email subject
+            string subject = "Registration Successful";
 
+            // Email body
+            string body = $"Dear user,\n\nRegistration was successful!\n\nRegards,\nHomeFinder Team";
+
+            // Send email
+            SendEmail(email, subject, body);
+        }
+
+        private void SendResetInstructionsEmail(string email, string resetToken)
+        {
+            // Email subject
+            string subject = "Password Reset Instructions";
+
+            // Email body
+            string body = $"Dear user,\n\nTo reset your password, please click the following link: http://localhost:4200/reset-password?token={resetToken}\n\nThis link will expire after a certain period.\n\nRegards,\nHomeFinder Team";
+
+            // Send email
+            SendEmail(email, subject, body);
+        }
+
+        [HttpPost("add-favorite")]
+        [Authorize]
+        public async Task<IActionResult> AddFavoriteProperty(int userId, int propertyId)
+        {
+            await uow.UserFavoritePropertyRepository.AddFavoriteProperty(userId, propertyId);
+            return Ok();
+        }
+
+        [HttpPost("remove-favorite")]
+        [Authorize]
+        public async Task<IActionResult> RemoveFavoriteProperty(int userId, int propertyId)
+        {
+            await uow.UserFavoritePropertyRepository.RemoveFavoriteProperty(userId, propertyId);
+            return Ok();
+        }
+
+        [HttpGet("favorite-properties")]
+        [Authorize]
+        public async Task<IActionResult> GetFavoriteProperties(int userId)
+        {
+            var favoriteProperties = await uow.UserFavoritePropertyRepository.GetFavoriteProperties(userId);
+            return Ok(favoriteProperties);
+        }
 
     }
 }

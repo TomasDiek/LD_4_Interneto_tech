@@ -7,6 +7,7 @@ namespace LD_4_Interneto_tech.Interfaces
          ICityRepository CityRepository {get; }
 
          IUserRepository UserRepository {get; }
+         IUserFavoritePropertyRepository UserFavoritePropertyRepository {get; }
 
          IPropertyRepository PropertyRepository {get; }
 

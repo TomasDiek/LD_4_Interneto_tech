@@ -17,7 +17,8 @@ namespace LD_4_Interneto_tech.Data
 
         public IUserRepository UserRepository =>         
             new UserRepository(dc);
-
+        public IUserFavoritePropertyRepository UserFavoritePropertyRepository =>
+            new UserFavoritePropertyRepository(dc);
         public IFurnishingTypeRepository FurnishingTypeRepository =>         
             new FurnishingTypeRepository(dc);
 

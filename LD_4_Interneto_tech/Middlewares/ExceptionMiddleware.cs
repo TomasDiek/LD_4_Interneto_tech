@@ -1,4 +1,5 @@
 ﻿using Azure;
+using CloudinaryDotNet.Actions;
 using LD_4_Interneto_tech.Errors;
 using Microsoft.AspNetCore.Http;
 using System.Net;
@@ -48,6 +49,7 @@ namespace LD_4_Interneto_tech.Middlewares
                 if (env.IsDevelopment())
                 {
                     response = new ApiError((int)statusCode, ex.Message, ex.StackTrace.ToString());
+                    Console.WriteLine(ex.GetBaseException().ToString());
                 }
                 else
                 {

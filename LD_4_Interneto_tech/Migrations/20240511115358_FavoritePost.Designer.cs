@@ -4,6 +4,7 @@ using LD_4_Interneto_tech.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LD_4_Interneto_tech.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20240511115358_FavoritePost")]
+    partial class FavoritePost
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -266,12 +269,10 @@ namespace LD_4_Interneto_tech.Migrations
                     b.Property<DateTime>("LastUpdatedOn")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("PropertyId")
-                        .IsRequired()
+                    b.Property<int>("PropertyId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("UserId")
-                        .IsRequired()
+                    b.Property<int>("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");

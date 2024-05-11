@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Runtime.InteropServices;
 
 namespace LD_4_Interneto_tech.Models
 {
@@ -10,7 +11,9 @@ namespace LD_4_Interneto_tech.Models
         public byte[] Password { get; set; }
 
         public byte[] PasswordKey { get; set; }
-        public string ResetToken { get; internal set; }
+        public string? ResetToken { get; internal set; }
+        [Required]
         public string Email { get; set; }
+        public string MobileNumber { get; set; }
     }
 }

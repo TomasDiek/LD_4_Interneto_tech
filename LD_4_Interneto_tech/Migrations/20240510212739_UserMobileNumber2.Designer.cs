@@ -4,6 +4,7 @@ using LD_4_Interneto_tech.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LD_4_Interneto_tech.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20240510212739_UserMobileNumber2")]
+    partial class UserMobileNumber2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -251,38 +254,6 @@ namespace LD_4_Interneto_tech.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("LD_4_Interneto_tech.Models.UserFavoriteProperty", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnOrder(0);
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("LastUpdatedBy")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("LastUpdatedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int?>("PropertyId")
-                        .IsRequired()
-                        .HasColumnType("int");
-
-                    b.Property<int?>("UserId")
-                        .IsRequired()
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PropertyId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("UserFavoriteProperty");
-                });
-
             modelBuilder.Entity("LD_4_Interneto_tech.Models.Photo", b =>
                 {
                     b.HasOne("LD_4_Interneto_tech.Models.Property", "Property")
@@ -325,25 +296,6 @@ namespace LD_4_Interneto_tech.Migrations
                     b.Navigation("FurnishingType");
 
                     b.Navigation("PropertyType");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("LD_4_Interneto_tech.Models.UserFavoriteProperty", b =>
-                {
-                    b.HasOne("LD_4_Interneto_tech.Models.Property", "Property")
-                        .WithMany()
-                        .HasForeignKey("PropertyId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("LD_4_Interneto_tech.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Property");
 
                     b.Navigation("User");
                 });
