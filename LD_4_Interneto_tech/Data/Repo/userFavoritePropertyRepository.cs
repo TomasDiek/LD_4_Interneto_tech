@@ -58,9 +58,23 @@ namespace LD_4_Interneto_tech.Data.Repo
             // Retrieve the actual property objects
             var favoriteProperties = await dc.Properties
                 .Where(p => favoritePropertyIds.Contains(p.Id))
+                .Include(p => p.PropertyType) 
+                .Include(p => p.City)
+                .Include(p => p.FurnishingType)
+                .Include(p => p.Photos)
+                .Where(p => p.PostedBy == userId)
                 .ToListAsync();
-
             return favoriteProperties;
         }
+        public async Task<List<int?>> GetFavoritePropertyIds(int userId)
+        {
+            var favoritePropertyIds = await dc.UserFavoriteProperty
+                .Where(ufp => ufp.UserId == userId)
+                .Select(ufp => ufp.PropertyId)
+                .ToListAsync();
+
+            return favoritePropertyIds;
+        }
+
     }
 }

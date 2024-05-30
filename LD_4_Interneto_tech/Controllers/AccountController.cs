@@ -42,9 +42,14 @@ namespace LD_4_Interneto_tech.Controllers
                 apiError.ErrorDetails="This error appear when provided user id or password does not exists";
                 return BadRequest(apiError);
             }
-
+            var favoritePropertyIds = await uow.UserFavoritePropertyRepository.GetFavoritePropertyIds(user.Id);
             var loginRes = new LoginResDto();
+            loginRes.UserId = user.Id;
             loginRes.UserName = user.Username;
+            if (favoritePropertyIds != null)
+            {
+                loginRes.FavoritePropertyIds = favoritePropertyIds;
+            }
             loginRes.Token = CreateJWT(user);
             return Ok(loginRes);
         }
@@ -206,29 +211,7 @@ namespace LD_4_Interneto_tech.Controllers
             SendEmail(email, subject, body);
         }
 
-        [HttpPost("add-favorite")]
-        [Authorize]
-        public async Task<IActionResult> AddFavoriteProperty(int userId, int propertyId)
-        {
-            await uow.UserFavoritePropertyRepository.AddFavoriteProperty(userId, propertyId);
-            return Ok();
-        }
 
-        [HttpPost("remove-favorite")]
-        [Authorize]
-        public async Task<IActionResult> RemoveFavoriteProperty(int userId, int propertyId)
-        {
-            await uow.UserFavoritePropertyRepository.RemoveFavoriteProperty(userId, propertyId);
-            return Ok();
-        }
-
-        [HttpGet("favorite-properties")]
-        [Authorize]
-        public async Task<IActionResult> GetFavoriteProperties(int userId)
-        {
-            var favoriteProperties = await uow.UserFavoritePropertyRepository.GetFavoriteProperties(userId);
-            return Ok(favoriteProperties);
-        }
 
     }
 }

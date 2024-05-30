@@ -157,7 +157,30 @@ namespace LD_4_Interneto_tech.Controllers
             var propertyListDTO = mapper.Map<IEnumerable<PropertyListDto>>(properties);
             return Ok(propertyListDTO);
         }
+        [HttpPost("add-favorite")]
+        [Authorize]
+        public async Task<IActionResult> AddFavoriteProperty(int userId, int propertyId)
+        {
+            await uow.UserFavoritePropertyRepository.AddFavoriteProperty(userId, propertyId);
+            return Ok();
+        }
 
+        [HttpPost("remove-favorite")]
+        [Authorize]
+        public async Task<IActionResult> RemoveFavoriteProperty(int userId, int propertyId)
+        {
+            await uow.UserFavoritePropertyRepository.RemoveFavoriteProperty(userId, propertyId);
+            return Ok();
+        }
+
+        [HttpGet("favorite-properties/{userId}")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetFavoriteProperties(int userId)
+        {
+            var properties = await uow.UserFavoritePropertyRepository.GetFavoriteProperties(userId);
+            var propertyListDTO = mapper.Map<IEnumerable<PropertyListDto>>(properties);
+            return Ok(propertyListDTO);
+        }
         //property/add/photo/1
         [HttpPost("add/photo/{propId}")]
         [Authorize]

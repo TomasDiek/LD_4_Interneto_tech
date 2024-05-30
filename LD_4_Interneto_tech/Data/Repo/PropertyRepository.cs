@@ -97,7 +97,7 @@ namespace LD_4_Interneto_tech.Data.Repo
                 .Include(p => p.City)
                 .Include(p => p.FurnishingType)
                 .Include(p => p.Photos)
-                .Where(p => p.PostedBy == userId) // Assuming "PostedBy" is the property representing the user ID
+                .Where(p => p.PostedBy == userId)
                 .ToListAsync();
 
             return properties;

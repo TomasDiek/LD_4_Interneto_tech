@@ -7,6 +7,7 @@ namespace LD_4_Interneto_tech.Interfaces
         Task AddFavoriteProperty(int userId, int propertyId);
         Task RemoveFavoriteProperty(int userId, int propertyId);
         Task<IEnumerable<Property>> GetFavoriteProperties(int userId);
+        Task<List<int?>> GetFavoritePropertyIds(int userId);
     }
 
 }
