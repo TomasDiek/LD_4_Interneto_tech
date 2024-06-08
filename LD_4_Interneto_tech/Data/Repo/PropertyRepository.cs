@@ -6,6 +6,7 @@ using LD_4_Interneto_tech.Interfaces;
 using LD_4_Interneto_tech.Models;
 using LD_4_Interneto_tech.Data;
 using LD_4_Interneto_tech.Dto;
+using LD_4_Interneto_tech.Migrations;
 
 namespace LD_4_Interneto_tech.Data.Repo
 {
@@ -100,6 +101,24 @@ namespace LD_4_Interneto_tech.Data.Repo
                 .Where(p => p.PostedBy == userId)
                 .ToListAsync();
 
+            return properties;
+        }
+        public async Task<int?> GetUserIdByPropertyIdAsync(int propertyId)
+        {
+            return await dc.Properties
+                .Where(p => p.Id == propertyId)
+                .Select(p => p.PostedBy)
+                .FirstOrDefaultAsync();
+        }
+        public async Task<IEnumerable<Property>> SearchPropertiesAsync(string searchTerm)
+        {
+            var properties = await dc.Properties
+              .Include(p => p.PropertyType)
+              .Include(p => p.City)
+              .Include(p => p.FurnishingType)
+              .Include(p => p.Photos)
+              .Where(p => p.Address.Contains(searchTerm) || p.Description.Contains(searchTerm) || p.City.Name.Contains(searchTerm))
+              .ToListAsync();
             return properties;
         }
     }

@@ -9,6 +9,7 @@ using LD_4_Interneto_tech.Dto;
 using LD_4_Interneto_tech.Interfaces;
 using LD_4_Interneto_tech.Models;
 using Microsoft.EntityFrameworkCore;
+using LD_4_Interneto_tech.Data.Repo;
 
 namespace LD_4_Interneto_tech.Controllers
 {
@@ -181,6 +182,26 @@ namespace LD_4_Interneto_tech.Controllers
             var propertyListDTO = mapper.Map<IEnumerable<PropertyListDto>>(properties);
             return Ok(propertyListDTO);
         }
+        // get user id by property
+        [HttpGet("postedBy/{propertyId}")]
+        public async Task<IActionResult> GetPostedBy(int propertyId)
+        {
+            var userId = await uow.PropertyRepository.GetUserIdByPropertyIdAsync(propertyId);
+            if (userId == null)
+            {
+                return NotFound();
+            }
+            return Ok(new { postedBy = userId });
+        }
+        // Filters
+        // Search
+        [HttpGet("search/{searchTerm}")]
+        public async Task<IActionResult> SearchProperties( string searchTerm)
+        {
+            var properties = await uow.PropertyRepository.SearchPropertiesAsync(searchTerm);
+            return Ok(properties);
+        }
+        // - Filters
         //property/add/photo/1
         [HttpPost("add/photo/{propId}")]
         [Authorize]

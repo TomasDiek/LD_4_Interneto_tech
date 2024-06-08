@@ -186,7 +186,18 @@ namespace LD_4_Interneto_tech.Controllers
                 }
             }
         }
-
+        //Contacts
+        [HttpGet("contact-by-property/{propertyId}")]
+        public async Task<IActionResult> GetUserContactByPropertyId(int propertyId)
+        {
+            var userContact = await uow.UserRepository.GetUserContactByPropertyId(propertyId);
+            if (userContact == null)
+            {
+                return NotFound();
+            }
+            return Ok(userContact);
+        }
+        //Emails
         private void SendRegistrationEmail(string email)
         {
             // Email subject

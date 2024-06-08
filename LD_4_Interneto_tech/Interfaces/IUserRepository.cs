@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using LD_4_Interneto_tech.Dto;
 using LD_4_Interneto_tech.Models;
 
 namespace LD_4_Interneto_tech.Interfaces
@@ -10,6 +11,7 @@ namespace LD_4_Interneto_tech.Interfaces
          Task<bool> UserAlreadyExists(string userName);
         Task<User> GetUserByResetToken(string resetToken);
         Task<User> GetUserByUsername(string userName);
+        Task<UserContactDto> GetUserContactByPropertyId(int propertyId);
         void HashPassword(string newPassword, out byte[] passwordHash, out byte[] passwordKey);
         Task SaveAsync();
         

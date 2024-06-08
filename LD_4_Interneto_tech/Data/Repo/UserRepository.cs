@@ -7,6 +7,7 @@ using LD_4_Interneto_tech.Models;
 using LD_4_Interneto_tech.Data;
 using System.Text;
 using Microsoft.AspNetCore.Identity;
+using LD_4_Interneto_tech.Dto;
 
 namespace LD_4_Interneto_tech.Data.Repo
 {
@@ -71,6 +72,20 @@ namespace LD_4_Interneto_tech.Data.Repo
         public async Task<bool> UserAlreadyExists(string userName)
         {
             return await dc.Users.AnyAsync(x => x.Username == userName);
+        }
+        // Contact information
+        public async Task<UserContactDto> GetUserContactByPropertyId(int propertyId)
+        {
+            var user = await (from p in dc.Properties
+                              join u in dc.Users on p.PostedBy equals u.Id
+                              where p.Id == propertyId
+                              select new UserContactDto
+                              {
+                                  Email = u.Email,
+                                  PhoneNumber = u.MobileNumber
+                              }).FirstOrDefaultAsync();
+
+            return user;
         }
         //password  reset
         public async Task<User> GetUserByResetToken(string resetToken)
