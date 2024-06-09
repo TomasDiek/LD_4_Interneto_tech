@@ -110,15 +110,19 @@ namespace LD_4_Interneto_tech.Data.Repo
                 .Select(p => p.PostedBy)
                 .FirstOrDefaultAsync();
         }
-        public async Task<IEnumerable<Property>> SearchPropertiesAsync(string searchTerm)
+        public async Task<IEnumerable<Property>> SearchPropertiesAsync(string searchTerm, int sellRent)
         {
             var properties = await dc.Properties
-              .Include(p => p.PropertyType)
-              .Include(p => p.City)
-              .Include(p => p.FurnishingType)
-              .Include(p => p.Photos)
-              .Where(p => p.Address.Contains(searchTerm) || p.Description.Contains(searchTerm) || p.City.Name.Contains(searchTerm))
-              .ToListAsync();
+             .Include(p => p.PropertyType)
+             .Include(p => p.City)
+             .Include(p => p.FurnishingType)
+             .Include(p => p.Photos)
+             .Where(p =>
+                 (p.Address.Contains(searchTerm) ||
+                  p.Description.Contains(searchTerm) ||
+                  p.City.Name.Contains(searchTerm)) &&
+                  p.SellRent == sellRent)
+         .ToListAsync();
             return properties;
         }
     }

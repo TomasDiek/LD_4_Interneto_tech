@@ -195,11 +195,12 @@ namespace LD_4_Interneto_tech.Controllers
         }
         // Filters
         // Search
-        [HttpGet("search/{searchTerm}")]
-        public async Task<IActionResult> SearchProperties( string searchTerm)
+        [HttpGet("search/{sellRent}/{searchTerm}")]
+        public async Task<IActionResult> SearchProperties(int sellRent, string searchTerm)
         {
-            var properties = await uow.PropertyRepository.SearchPropertiesAsync(searchTerm);
-            return Ok(properties);
+            var properties = await uow.PropertyRepository.SearchPropertiesAsync(searchTerm,sellRent);
+            var propertyListDTO = mapper.Map<IEnumerable<PropertyListDto>>(properties);
+            return Ok(propertyListDTO);
         }
         // - Filters
         //property/add/photo/1

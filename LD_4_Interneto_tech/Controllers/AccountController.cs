@@ -126,7 +126,7 @@ namespace LD_4_Interneto_tech.Controllers
             user.PasswordKey = passwordKey;
             await uow.SaveAsync();
 
-            return Ok("Password reset successfully.");
+            return StatusCode(201);
         }
 
 
@@ -145,7 +145,7 @@ namespace LD_4_Interneto_tech.Controllers
             // Send reset instructions email
             SendResetInstructionsEmail(user.Email, user.ResetToken);
 
-            return Ok("Password reset instructions sent successfully.");
+            return StatusCode(201);
         }
 
 

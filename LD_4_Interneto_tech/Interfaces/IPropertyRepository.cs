@@ -13,7 +13,7 @@ namespace LD_4_Interneto_tech.Interfaces
         void DeleteProperty(int id);
         Task<bool> UpdateProperty(int id, Property property);
         Task<int?> GetUserIdByPropertyIdAsync(int propertyId);
-        Task<IEnumerable<Property>> SearchPropertiesAsync(string searchTerm);
+        Task<IEnumerable<Property>> SearchPropertiesAsync(string searchTerm, int sellRent);
         Task<IEnumerable<Property>> GetPropertiesByUserIdAsync(int userId);
     }
 }
